@@ -1,6 +1,7 @@
 const args = process.argv.slice(2);
 const readline = require("readline");
 const path = require("path");
+const fs = require("fs");
 
 // Function to extract the value of a CLI argument
 const getArgValue = (argName) => {
@@ -16,6 +17,14 @@ const printCurrentDirectory = () => {
   const currentDirectory = process.cwd();
   console.log("\x1b[33m%s\x1b[0m", `You are currently in ${currentDirectory}`);
 };
+
+// Display the starting working directory
+const startingDirectory =
+  process.env.HOME || process.env.USERPROFILE || process.cwd();
+console.log(
+  "\x1b[34m%s\x1b[0m",
+  `Starting working directory is ${startingDirectory}`
+);
 
 // Display the welcome message and current working directory
 printCurrentDirectory();
@@ -51,5 +60,53 @@ rl.on("close", () => {
 // Handle uncaught exceptions
 process.on("uncaughtException", (err) => {
   console.error(err);
-  process.exit(1);
+  console.log(
+    "\x1b[31m%s\x1b[0m",
+    "Operation failed. Please enter another command."
+  );
+  rl.prompt();
+});
+
+// Function to handle invalid input
+const handleInvalidInput = () => {
+  console.log(
+    "\x1b[31m%s\x1b[0m",
+    "Invalid input. Please enter a valid command."
+  );
+  rl.prompt();
+};
+
+// Function to handle operation failure
+const handleOperationFailure = (errorMessage) => {
+  console.log("\x1b[31m%s\x1b[0m", `Operation failed: ${errorMessage}`);
+  rl.prompt();
+};
+
+// Function to validate and execute commands
+const executeCommand = (command, args) => {
+  switch (command.toLowerCase()) {
+    case "cd":
+      const targetPath = args[0];
+      if (targetPath) {
+        const newPath = path.resolve(process.cwd(), targetPath);
+        if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
+          process.chdir(newPath);
+          printCurrentDirectory();
+        } else {
+          handleOperationFailure(`Directory "${targetPath}" does not exist.`);
+        }
+      } else {
+        handleInvalidInput();
+      }
+      break;
+    // Add more commands as needed
+    default:
+      handleInvalidInput();
+  }
+};
+
+// Listen for user input
+rl.on("line", (input) => {
+  const [command, ...commandArgs] = input.trim().split(" ");
+  executeCommand(command, commandArgs);
 });
