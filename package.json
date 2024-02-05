@@ -1,0 +1,20 @@
+{
+    "name": "file-manager",
+    "version": "1.0.0",
+    "description": "File Manager using Node.js APIs",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "keywords": [
+      "file",
+      "manager",
+      "node.js"
+    ],
+    "author": "Alexei Savostyanov",
+    "license": "MIT",
+    "dependencies": {
+      "inquirer": "^8.3.0"
+    }
+  }
+  
