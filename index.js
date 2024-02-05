@@ -136,12 +136,12 @@ const handleFileOperation = (operation, args) => {
     case "mv":
       const newDestinationPath = args[1];
       if (filePath && newDestinationPath) {
-        const readStream = fs.createReadStream(filePath);
-        const writeStream = fs.createWriteStream(newDestinationPath);
-
-        readStream.pipe(writeStream);
-        fs.unlinkSync(filePath);
-        console.log(`File "${filePath}" moved to "${newDestinationPath}".`);
+        try {
+          fs.renameSync(filePath, newDestinationPath);
+          console.log(`File "${filePath}" moved to "${newDestinationPath}".`);
+        } catch (error) {
+          handleOperationFailure(`Error moving file: ${error.message}`);
+        }
       } else {
         handleInvalidInput();
       }
