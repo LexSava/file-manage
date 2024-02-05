@@ -270,10 +270,22 @@ const executeCommand = (input) => {
     case "os":
       handleOsOperation(args[0]);
       break;
+    case "add":
+      handleFileOperation(command.toLowerCase(), args);
+      break;
     default:
       if (
-        command.toLowerCase() in
-        ["cat", "add", "rn", "cp", "mv", "rm", "hash", "compress", "decompress"]
+        [
+          "cat",
+          "add",
+          "rn",
+          "cp",
+          "mv",
+          "rm",
+          "hash",
+          "compress",
+          "decompress",
+        ].includes(command.toLowerCase())
       ) {
         handleFileOperation(command.toLowerCase(), args);
       } else {
