@@ -300,6 +300,12 @@ const executeCommand = (input) => {
 
 // Listen for user input
 rl.on("line", (input) => {
+  // Check if the user entered the .exit command
+  if (input.trim() === ".exit") {
+    rl.close();
+    return;
+  }
+
   executeCommand(input);
 });
 
