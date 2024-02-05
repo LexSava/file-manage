@@ -115,8 +115,12 @@ const handleFileOperation = (operation, args) => {
     case "rn":
       const newFilename = args[1];
       if (filePath && newFilename) {
-        fs.renameSync(filePath, newFilename);
-        console.log(`File "${filePath}" renamed to "${newFilename}".`);
+        if (fs.existsSync(filePath)) {
+          fs.renameSync(filePath, newFilename);
+          console.log(`File "${filePath}" renamed to "${newFilename}".`);
+        } else {
+          handleOperationFailure(`File "${filePath}" does not exist.`);
+        }
       } else {
         handleInvalidInput();
       }
