@@ -102,8 +102,12 @@ const handleFileOperation = (operation, args) => {
       break;
     case "add":
       if (filePath) {
-        fs.writeFileSync(filePath, "");
-        console.log(`File "${filePath}" created.`);
+        if (fs.existsSync(filePath)) {
+          handleOperationFailure(`File "${filePath}" already exists.`);
+        } else {
+          fs.writeFileSync(filePath, "");
+          console.log(`File "${filePath}" created.`);
+        }
       } else {
         handleInvalidInput();
       }
